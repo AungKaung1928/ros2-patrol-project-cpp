@@ -1,0 +1,208 @@
+controller_server:
+  ros__parameters:
+    controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugins: ["general_goal_checker"]
+    controller_plugins: ["FollowPath"]
+    
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+    
+    general_goal_checker:
+      stateful: True
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.3            # Reasonable tolerance
+      yaw_goal_tolerance: 0.3           # Reasonable tolerance
+    
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      debug_trajectory_details: True
+      
+      # HIGH SPEED CONFIGURATION
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 4.0                    # VERY HIGH forward speed
+      max_vel_y: 0.0
+      max_vel_theta: 8.0                # VERY HIGH rotation speed
+      min_speed_xy: 0.8                 # HIGH minimum speed for momentum
+      max_speed_xy: 4.0                 # VERY HIGH maximum speed
+      min_speed_theta: 0.0
+      
+      # AGGRESSIVE ACCELERATION/DECELERATION
+      acc_lim_x: 12.0                   # VERY HIGH acceleration
+      acc_lim_y: 0.0
+      acc_lim_theta: 15.0               # VERY HIGH angular acceleration
+      decel_lim_x: -12.0                # VERY HIGH deceleration
+      decel_lim_y: 0.0
+      decel_lim_theta: -15.0            # VERY HIGH angular deceleration
+      
+      # TRAJECTORY SAMPLING FOR SPEED
+      sim_time: 1.5                     # Simulation time horizon
+      vx_samples: 20                    # More velocity samples for better paths
+      vy_samples: 1                     # Differential drive doesn't need Y
+      vtheta_samples: 20                # More angular samples
+      
+      # OPTIMIZED CRITICS FOR SPEED AND SAFETY
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      
+      # CRITIC WEIGHTS (Lower obstacle weight = faster but less safe)
+      BaseObstacle.scale: 0.05          # Low for speed, but not zero for safety
+      PathAlign.scale: 32.0             # High path following
+      GoalAlign.scale: 20.0             # Moderate goal alignment  
+      PathDist.scale: 36.0              # High path distance importance
+      GoalDist.scale: 24.0              # High goal distance importance
+      RotateToGoal.scale: 32.0          # High rotation to goal
+      Oscillation.scale: 0.0            # Disable oscillation checking for speed
+      
+      # ADDITIONAL SPEED PARAMETERS
+      path_distance_bias: 64.0          # Strong preference for following path
+      goal_distance_bias: 24.0          # Moderate goal distance bias
+      
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 20.0
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5                    # Reasonable planning tolerance
+      use_astar: false                  # Dijkstra is faster for simple environments
+      allow_unknown: true
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 10.0            # High update frequency
+      publish_frequency: 5.0            # High publish frequency
+      global_frame: odom
+      robot_base_frame: base_link
+      rolling_window: true
+      width: 4                          # Slightly larger for high speed
+      height: 4                         # Slightly larger for high speed
+      resolution: 0.05                  # Fine resolution for obstacles
+      
+      # PLUGINS FOR HIGH SPEED
+      plugins: ["voxel_layer", "inflation_layer"]
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 2.0        # Lower inflation for speed
+        inflation_radius: 0.3           # Smaller inflation radius
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        publish_voxel_map: True
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        max_obstacle_height: 2.0
+        mark_threshold: 0
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 2.0             # Moderate update for global map
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link
+      resolution: 0.05                  # Fine resolution
+      track_unknown_space: true
+      
+      # PLUGINS
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          obstacle_max_range: 2.5
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 2.0        # Lower for speed
+        inflation_radius: 0.3           # Smaller for speed
+
+behavior_server:
+  ros__parameters:
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
+    spin:
+      plugin: "nav2_behaviors/Spin"
+    backup:
+      plugin: "nav2_behaviors/BackUp"
+    drive_on_heading:
+      plugin: "nav2_behaviors/DriveOnHeading"
+    wait:
+      plugin: "nav2_behaviors/Wait"
+    global_frame: odom
+    robot_base_frame: base_link
+    transform_timeout: 0.1
+    simulate_ahead_time: 2.0
+    max_rotational_vel: 8.0             # High rotation for behaviors
+    min_rotational_vel: 0.4
+    rotational_acc_lim: 15.0            # High acceleration
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: True
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    wait_for_service_timeout: 1000
+    action_server_result_timeout: 900.0
+    navigators: ["navigate_to_pose", "navigate_through_poses"]
+    navigate_to_pose:
+      plugin: "nav2_bt_navigator/NavigateToPoseNavigator"
+    navigate_through_poses:
+      plugin: "nav2_bt_navigator/NavigateThroughPosesNavigator"
+
+waypoint_follower:
+  ros__parameters:
+    loop_rate: 20
+    stop_on_failure: false
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: True
+      waypoint_pause_duration: 200
+
+velocity_smoother:
+  ros__parameters:
+    smoothing_frequency: 20.0
+    scale_velocities: false             # Disable velocity scaling for max speed
+    feedback: "OPEN_LOOP"
+    max_velocity: [4.0, 0.0, 8.0]      # [x, y, theta] - HIGH SPEEDS
+    min_velocity: [-1.0, 0.0, -8.0]    # Allow reverse
+    max_accel: [12.0, 0.0, 15.0]       # [x, y, theta] - HIGH ACCELERATION  
+    max_decel: [-12.0, 0.0, -15.0]     # [x, y, theta] - HIGH DECELERATION
+    odom_topic: "odom"
+    odom_duration: 0.1
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0

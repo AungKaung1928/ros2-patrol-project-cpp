@@ -1,0 +1,17 @@
+patrol_points:
+  - name: "point_1"
+    x: 2.0
+    y: 0.0
+    z: 0.0
+  - name: "point_2"
+    x: 2.0
+    y: 2.0
+    z: 0.0
+  - name: "point_3"
+    x: 0.0
+    y: 2.0
+    z: 0.0
+  - name: "point_4"
+    x: 0.0
+    y: 0.0
+    z: 0.0
