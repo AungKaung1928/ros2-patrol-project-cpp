@@ -429,5 +429,3 @@ This project follows ROS2 C++ style guidelines:
 | **Recovery Success Rate** | >95% | 97% |
 | **CPU Usage** | <30% | 28% |
 | **Memory Usage** | <500MB | 450MB |
-
-## Testing co-author feature!
