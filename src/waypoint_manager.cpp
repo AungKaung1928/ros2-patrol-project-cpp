@@ -16,7 +16,7 @@ WaypointManager::WaypointManager()
 void WaypointManager::loadPatrolPoints()
 {
     try {
-        // Get package share directory
+        // Get the package share directory
         std::string package_share_directory = 
             ament_index_cpp::get_package_share_directory("patrol_navigation_project_cpp");
         std::string yaml_file = package_share_directory + "/config/patrol_points.yaml";
