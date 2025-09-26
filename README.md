@@ -20,6 +20,43 @@ An advanced autonomous patrol navigation system built with ROS2 and Nav2, enabli
 - **📊 Real-time Monitoring**: RViz integration for system state visualization
 - **🔧 Robust Recovery**: Automatic failure handling with configurable recovery behaviors
 
+# 📚 Libraries & Dependencies
+
+This project leverages advanced C++ libraries and ROS2 frameworks for high-performance autonomous navigation:
+
+## 🔧 Core ROS2 C++ Libraries
+- **[![rclcpp](https://img.shields.io/badge/rclcpp-ROS2_C++_Client-blue?style=flat-square)](https://docs.ros.org/en/humble/p/rclcpp/)** - ROS2 C++ client library for node lifecycle, publishers, subscribers, and core functionality
+- **[![rclcpp_action](https://img.shields.io/badge/rclcpp__action-Action_Client-green?style=flat-square)](https://docs.ros.org/en/humble/p/rclcpp_action/)** - ROS2 action client/server library for long-running navigation tasks
+- **[![geometry_msgs](https://img.shields.io/badge/geometry__msgs-Pose_Messages-orange?style=flat-square)](https://docs.ros.org/en/humble/p/geometry_msgs/)** - ROS2 message types for robot poses, positions, and spatial transforms
+- **[![tf2](https://img.shields.io/badge/tf2-Transform_Library-purple?style=flat-square)](https://docs.ros.org/en/humble/p/tf2/)** - Transform library for coordinate frame conversions and quaternion mathematics
+- **[![tf2_geometry_msgs](https://img.shields.io/badge/tf2__geometry__msgs-Transform_Utils-indigo?style=flat-square)](https://docs.ros.org/en/humble/p/tf2_geometry_msgs/)** - Integration utilities between tf2 and geometry messages
+
+## 🛠️ Modern C++ Standard Libraries
+- **[![chrono](https://img.shields.io/badge/chrono-Time_Handling-yellow?style=flat-square)](https://en.cppreference.com/w/cpp/chrono)** - C++11 time utilities with duration literals (`5s`, `10s`) and high-resolution timing
+- **[![thread](https://img.shields.io/badge/thread-Concurrency-red?style=flat-square)](https://en.cppreference.com/w/cpp/thread)** - Thread management and synchronization for sleep operations
+- **[![cmath](https://img.shields.io/badge/cmath-Mathematics-teal?style=flat-square)](https://en.cppreference.com/w/cpp/numeric/math)** - Mathematical functions for trigonometry (`sin`, `cos`) and quaternion calculations
+- **[![memory](https://img.shields.io/badge/memory-Smart_Pointers-cyan?style=flat-square)](https://en.cppreference.com/w/cpp/memory)** - Modern C++ memory management with `shared_ptr` and `make_shared`
+- **[![functional](https://img.shields.io/badge/functional-Callbacks-pink?style=flat-square)](https://en.cppreference.com/w/cpp/utility/functional)** - Function objects and callback binding with `std::bind` and `std::placeholders`
+
+## 🧭 Navigation Stack Integration
+- **[![Nav2](https://img.shields.io/badge/Nav2-Navigation_Framework-darkgreen?style=flat-square)](https://navigation.ros.org/)** - ROS2 navigation framework with `navigate_to_pose` action service
+- **[![AMCL](https://img.shields.io/badge/AMCL-Localization-brown?style=flat-square)](https://navigation.ros.org/configuration/packages/configuring-amcl.html)** - Adaptive Monte Carlo Localization for robot pose estimation
+
+## 🏗️ Architecture & Design Patterns
+- **Action-Based Navigation** - Asynchronous goal handling with feedback, result, and cancellation callbacks
+- **Smart Pointer Management** - RAII principles with automatic memory management and exception safety
+- **Publisher-Subscriber Pattern** - Decoupled communication architecture for initial pose publication
+- **State Machine Design** - Robust patrol state management with error recovery mechanisms
+- **Transform Mathematics** - 3D spatial calculations with quaternion-based orientation handling
+
+## ⚡ Performance Features
+- **Asynchronous Processing** - Non-blocking navigation goal execution with concurrent callback handling
+- **Modern C++ Practices** - C++17 features, move semantics, and zero-cost abstractions
+- **Real-time Constraints** - High-frequency control loops optimized for autonomous navigation
+- **Exception Safety** - Robust error handling with graceful degradation and recovery behaviors
+
+> 💡 **Technical Note**: This project demonstrates **high-level autonomous navigation** using Nav2's sophisticated path planning and obstacle avoidance, contrasting with lower-level reactive control approaches.
+
 ## 🏗️ System Architecture
 
 ```mermaid
