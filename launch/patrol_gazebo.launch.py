@@ -9,7 +9,7 @@ def generate_launch_description():
     # Get package directories
     turtlebot3_gazebo_share = FindPackageShare('turtlebot3_gazebo')
     
-    # Include TurtleBot3 Gazebo launch
+    # Include TurtleBot3 Classic Gazebo launch
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             turtlebot3_gazebo_share, '/launch/turtlebot3_world.launch.py'
