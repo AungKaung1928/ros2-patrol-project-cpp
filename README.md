@@ -123,14 +123,14 @@ sudo apt install -y \
 
 ```bash
 # Create workspace
-mkdir -p ~/patrol_ws/src
-cd ~/patrol_ws/src
+mkdir -p ~/patrol_navigation_cpp_ws/src
+cd ~/patrol_navigation_cpp_ws/src
 
 # Clone repository
 git clone <repository-url> patrol_navigation_project_cpp
 
 # Install dependencies
-cd ~/patrol_ws
+cd ~/patrol_navigation_cpp_ws
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 
@@ -152,14 +152,14 @@ source ~/.bashrc
 
 **Terminal 1 - Simulation Environment:**
 ```bash
-cd ~/patrol_ws
+cd ~/patrol_navigation_cpp_ws
 source install/setup.bash
 ros2 launch patrol_navigation_project_cpp patrol_gazebo.launch.py
 ```
 
 **Terminal 2 - Navigation System:**
 ```bash
-cd ~/patrol_ws
+cd ~/patrol_navigation_cpp_ws
 source install/setup.bash
 ros2 launch patrol_navigation_project_cpp patrol_navigation.launch.py
 ```
