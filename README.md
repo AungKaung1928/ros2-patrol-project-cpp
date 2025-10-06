@@ -112,11 +112,6 @@ sudo apt install -y \
   python3-colcon-common-extensions
 ```
 
-> 📚 **Documentation Links:**
-> - [ROS2 Humble Documentation](https://docs.ros.org/en/humble/)
-> - [Nav2 Configuration Guide](https://navigation.ros.org/configuration/)
-> - [TurtleBot3 Manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/)
-
 ## 🚀 Quick Start Guide
 
 ### Step 1: Installation
