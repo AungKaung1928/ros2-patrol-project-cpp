@@ -4,7 +4,7 @@
 [![C++](https://img.shields.io/badge/C++-17-green?style=for-the-badge&logo=cplusplus&logoColor=white)](https://isocpp.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellow?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 [![Gazebo](https://img.shields.io/badge/Gazebo-11+-orange?style=for-the-badge&logo=gazebo)](https://gazebosim.org/)
-[![Nav2](https://img.shields.io/badge/Nav2-Enabled-purple?style=for-the-badge)](https://navigation.ros.org/)
+[![Nav2](https://docs.nav2.org/)
 
 ## 🎯 Overview
 
