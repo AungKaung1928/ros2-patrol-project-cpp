@@ -13,7 +13,7 @@ def generate_launch_description():
     turtlebot3_navigation2_share = get_package_share_directory('turtlebot3_navigation2')
     package_share = get_package_share_directory('patrol_navigation_project_cpp')
     
-    # Use TurtleBot3's default map and params for now
+    # Will use TurtleBot3's default map and params for now
     default_map = os.path.join(turtlebot3_navigation2_share, 'map', 'map.yaml')
     default_params = os.path.join(nav2_bringup_share, 'params', 'nav2_params.yaml')
     
