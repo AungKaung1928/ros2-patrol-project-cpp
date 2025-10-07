@@ -15,7 +15,7 @@ PatrolController::PatrolController()
       current_point_index_(0),
       is_patrolling_(false)
 {
-    // Initialize action client for navigation
+    // Initialize action client for navigation system
     navigate_to_pose_client_ = rclcpp_action::create_client<NavigateToPose>(
         this, "navigate_to_pose");
     
