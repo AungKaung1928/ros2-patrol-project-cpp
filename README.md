@@ -39,8 +39,8 @@ This project leverages advanced C++ libraries and ROS2 frameworks for high-perfo
 - **[![functional](https://img.shields.io/badge/functional-Callbacks-pink?style=flat-square)](https://en.cppreference.com/w/cpp/utility/functional)** - Function objects and callback binding with `std::bind` and `std::placeholders`
 
 ## 🧭 Navigation Stack Integration
-- **[![Nav2](https://img.shields.io/badge/Nav2-Navigation_Framework-darkgreen?style=flat-square)](https://navigation.ros.org/)** - ROS2 navigation framework with `navigate_to_pose` action service
-- **[![AMCL](https://img.shields.io/badge/AMCL-Localization-brown?style=flat-square)](https://navigation.ros.org/configuration/packages/configuring-amcl.html)** - Adaptive Monte Carlo Localization for robot pose estimation
+- **[![Nav2](https://img.shields.io/badge/Nav2-Navigation_Framework-darkgreen?style=flat-square)](https://docs.nav2.org/)** - ROS2 navigation framework with `navigate_to_pose` action service
+- **[![AMCL](https://img.shields.io/badge/AMCL-Localization-brown?style=flat-square)](https://docs.nav2.org/configuration/packages/configuring-amcl.html)** - Adaptive Monte Carlo Localization for robot pose estimation
 
 ## 🏗️ Architecture & Design Patterns
 - **Action-Based Navigation** - Asynchronous goal handling with feedback, result, and cancellation callbacks
