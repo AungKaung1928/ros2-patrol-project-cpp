@@ -1,17 +1,78 @@
+# Full coverage patrol for TurtleBot3 World
+# Waypoints strategically placed to cover all accessible areas
+# Map bounds approximately: x[-2.0, 2.0], y[-2.0, 2.0]
+
 patrol_points:
-  - name: "point_1"
-    x: 2.0
-    y: 0.0
-    z: 0.0
-  - name: "point_2"
-    x: 2.0
-    y: 2.0
-    z: 0.0
-  - name: "point_3"
-    x: 0.0
-    y: 2.0
-    z: 0.0
-  - name: "point_4"
+  # Entry/Exit zone (origin area)
+  - name: "origin_station"
     x: 0.0
     y: 0.0
     z: 0.0
+    description: "Starting position and return station"
+  
+  # Northern corridor
+  - name: "north_corridor"
+    x: 1.5
+    y: 1.8
+    z: 0.0
+    description: "Upper hallway monitoring point"
+  
+  # Eastern wing
+  - name: "east_wing"
+    x: 1.8
+    y: 0.3
+    z: 0.0
+    description: "East side perimeter check"
+  
+  # Southeast corner
+  - name: "southeast_corner"
+    x: 1.5
+    y: -1.5
+    z: 0.0
+    description: "Southeast area coverage"
+  
+  # Southern corridor
+  - name: "south_corridor"
+    x: 0.0
+    y: -1.8
+    z: 0.0
+    description: "Lower hallway monitoring"
+  
+  # Western wing
+  - name: "west_wing"
+    x: -1.8
+    y: -0.5
+    z: 0.0
+    description: "West side perimeter check"
+  
+  # Northwest corner
+  - name: "northwest_corner"
+    x: -1.5
+    y: 1.5
+    z: 0.0
+    description: "Northwest area coverage"
+  
+  # Central hub
+  - name: "central_hub"
+    x: -0.3
+    y: 0.5
+    z: 0.0
+    description: "Central monitoring position"
+
+# Patrol configuration
+patrol_config:
+  total_waypoints: 8
+  loop_enabled: true
+  wait_at_waypoint: 2.0  # seconds
+  retry_on_failure: true
+  max_retries: 3
+  timeout_per_waypoint: 60.0  # seconds
+
+# Map metadata (for reference)
+map_info:
+  name: "turtlebot3_world"
+  resolution: 0.05
+  origin_x: -2.0
+  origin_y: -2.0
+  width: 4.0
+  height: 4.0

@@ -13,6 +13,7 @@ endif()
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
@@ -40,12 +41,15 @@ set(dependencies
   tf2_ros
   tf2_geometry_msgs
   std_msgs
+  visualization_msgs
 )
 
 # Patrol Controller executable (includes waypoint_manager as part of it)
 add_executable(patrol_controller
   src/patrol_controller.cpp
   src/waypoint_manager.cpp
+  src/patrol_visualizer.cpp
+
 )
 ament_target_dependencies(patrol_controller ${dependencies})
 target_link_libraries(patrol_controller yaml-cpp)
@@ -71,10 +75,10 @@ install(DIRECTORY config/
   DESTINATION share/${PROJECT_NAME}/config
 )
 
-# Install rviz files
-install(DIRECTORY rviz/
-  DESTINATION share/${PROJECT_NAME}/rviz
-)
+# Install rviz files (commented out - directory doesn't exist)
+# install(DIRECTORY rviz/
+#   DESTINATION share/${PROJECT_NAME}/rviz
+# )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

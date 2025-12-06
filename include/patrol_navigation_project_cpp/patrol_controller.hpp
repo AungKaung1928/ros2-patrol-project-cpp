@@ -11,6 +11,7 @@
 #include <string>
 #include <chrono>
 #include "patrol_navigation_project_cpp/waypoint_manager.hpp"
+#include "patrol_navigation_project_cpp/patrol_visualizer.hpp"
 
 namespace patrol_navigation_project_cpp
 {
@@ -37,6 +38,9 @@ private:
     // Waypoint manager
     std::shared_ptr<WaypointManager> waypoint_manager_;
     std::vector<PatrolPoint> patrol_points_;
+    
+    // Visualizer
+    std::shared_ptr<PatrolVisualizer> visualizer_;
     
     // Patrol state
     size_t current_point_index_;

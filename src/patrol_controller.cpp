@@ -15,19 +15,28 @@ PatrolController::PatrolController()
       current_point_index_(0),
       is_patrolling_(false)
 {
-    // Initialize action client for navigation
+    // Initialize action client for navigation system
+    // Step 1
     navigate_to_pose_client_ = rclcpp_action::create_client<NavigateToPose>(
         this, "navigate_to_pose");
     
     // Initialize initial pose publisher
+    // Step 2
     initial_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>(
         "initialpose", 10);
     
     // Initialize waypoint manager
+    // Step 3
     waypoint_manager_ = std::make_shared<WaypointManager>();
     patrol_points_ = waypoint_manager_->getPatrolPoints();
     
+    // Initialize visualizer
+    visualizer_ = std::make_shared<PatrolVisualizer>();
+    
+    RCLCPP_INFO(this->get_logger(), "Patrol controller with visualization initialized");
+    
     // Wait for Nav2 to be ready
+    // Step 4
     RCLCPP_INFO(this->get_logger(), "Waiting for Nav2 to be ready...");
     waitForNav2();
     RCLCPP_INFO(this->get_logger(), "Nav2 is ready!");
@@ -80,6 +89,7 @@ geometry_msgs::msg::PoseStamped PatrolController::createPoseStamped(
     return pose;
 }
 
+// Step 5
 void PatrolController::setInitialPose()
 {
     // Publish initial pose to set robot location at origin
@@ -114,13 +124,20 @@ void PatrolController::setInitialPose()
     std::this_thread::sleep_for(2s);
 }
 
+// Step 6
 void PatrolController::startPatrol()
 {
-    RCLCPP_INFO(this->get_logger(), "Starting patrol...");
+    RCLCPP_INFO(this->get_logger(), 
+        "Starting patrol with %zu waypoints...", patrol_points_.size());
     is_patrolling_ = true;
+    
+    // Visualize all waypoints
+    visualizer_->visualizeWaypoints(patrol_points_);
+    
     goToNextPoint();
 }
 
+// Step 7
 void PatrolController::goToNextPoint()
 {
     if (patrol_points_.empty()) {
@@ -133,6 +150,9 @@ void PatrolController::goToNextPoint()
         "Going to %s at (%.2f, %.2f)",
         current_point.name.c_str(), current_point.x, current_point.y);
     
+    // Visualize current target
+    visualizer_->visualizeCurrentTarget(current_point, current_point_index_);
+    
     // Create goal pose
     auto goal_pose = createPoseStamped(
         current_point.x,
@@ -141,10 +161,12 @@ void PatrolController::goToNextPoint()
     );
     
     // Create goal message
+    // Step 8
     auto goal_msg = NavigateToPose::Goal();
     goal_msg.pose = goal_pose;
     
     // Send goal options
+    // Step 9
     auto send_goal_options = 
         rclcpp_action::Client<NavigateToPose>::SendGoalOptions();
     
@@ -162,6 +184,7 @@ void PatrolController::goToNextPoint()
     goal_handle_future_ = navigate_to_pose_client_->async_send_goal(goal_msg, send_goal_options);
 }
 
+// Step 10
 void PatrolController::goalResponseCallback(
     const GoalHandleNavigateToPose::SharedPtr & goal_handle)
 {
@@ -173,6 +196,7 @@ void PatrolController::goalResponseCallback(
     }
 }
 
+// Step 11
 void PatrolController::feedbackCallback(
     GoalHandleNavigateToPose::SharedPtr,
     const std::shared_ptr<const NavigateToPose::Feedback> feedback)
@@ -181,6 +205,7 @@ void PatrolController::feedbackCallback(
     (void)feedback;  // Suppress unused parameter warning
 }
 
+// Step 12
 void PatrolController::resultCallback(
     const GoalHandleNavigateToPose::WrappedResult & result)
 {
@@ -194,6 +219,7 @@ void PatrolController::resultCallback(
                 std::this_thread::sleep_for(2s);
                 
                 // Move to next point
+                // Step 13
                 current_point_index_ = (current_point_index_ + 1) % patrol_points_.size();
                 
                 // Continue patrol if still active
@@ -202,16 +228,18 @@ void PatrolController::resultCallback(
                 }
             }
             break;
-            
+
+        // Step 14
         case rclcpp_action::ResultCode::CANCELED:
             RCLCPP_INFO(this->get_logger(), "Navigation was canceled");
             break;
-            
+
+        // Step 15
         case rclcpp_action::ResultCode::ABORTED:
             RCLCPP_ERROR(this->get_logger(), "Navigation failed! Retrying...");
             std::this_thread::sleep_for(2s);
             if (is_patrolling_) {
-                goToNextPoint();
+                goToNextPoint();         // Step 16
             }
             break;
             
