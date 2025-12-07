@@ -122,8 +122,8 @@ source ~/.bashrc
 
 **Terminal 1 - Gazebo Simulation:**
 ```bash
-export TURTLEBOT3_MODEL=waffle
-ros2 launch patrol_navigation_project_cpp patrol_gazebo.launch.py
+export TURTLEBOT3_MODEL=burger
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ```
 
 **Terminal 2 - Navigation & Patrol (wait 30 seconds after Terminal 1):**
