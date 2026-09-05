@@ -6,6 +6,8 @@
 [![Gazebo](https://img.shields.io/badge/Gazebo-11+-orange?style=for-the-badge&logo=gazebo)](https://gazebosim.org/)
 [![Nav2](https://img.shields.io/badge/Nav2-Humble-pink?style=for-the-badge&logo=ros&logoColor=white)](https://docs.nav2.org/)
 
+> **Simulator note (2026-09-05):** this project targets **Gazebo Classic 11** (`turtlebot3_gazebo`), which reached end-of-life in January 2025, and it is kept as-is rather than ported. For the same TurtleBot3 setup on **Gazebo Harmonic** (`ros_gz`), see [turtlebot3-wall-follower](https://github.com/AungKaung1928/turtlebot3-wall-follower).
+
 ## Overview
 
 Advanced autonomous patrol navigation system with 8-waypoint full coverage for TurtleBot3 world. Built with ROS2 Humble and Nav2, featuring real-time visualization, intelligent path planning, and continuous surveillance patrol.
