@@ -191,7 +191,11 @@ void PatrolController::goalResponseCallback(
 {
     if (!goal_handle) {
         RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
-        onFailure();
+        // Defer: sending a new goal from inside the goal-response callback does not go out.
+        reject_timer_ = this->create_wall_timer(std::chrono::milliseconds(10), [this]() {
+            reject_timer_->cancel();
+            onFailure();
+        });
     } else {
         RCLCPP_INFO(this->get_logger(), "Goal accepted by server, waiting for result");
         goal_handle_ = goal_handle;

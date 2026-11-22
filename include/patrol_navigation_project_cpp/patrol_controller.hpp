@@ -50,6 +50,7 @@ private:
     
     // Timer for checking navigation status
     rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::TimerBase::SharedPtr reject_timer_;
     
     // Current goal handle
     std::shared_future<GoalHandleNavigateToPose::SharedPtr> goal_handle_future_;
