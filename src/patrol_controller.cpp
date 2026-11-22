@@ -191,6 +191,7 @@ void PatrolController::goalResponseCallback(
 {
     if (!goal_handle) {
         RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
+        onFailure();
     } else {
         RCLCPP_INFO(this->get_logger(), "Goal accepted by server, waiting for result");
         goal_handle_ = goal_handle;
@@ -244,36 +245,42 @@ void PatrolController::resultCallback(
 
         // Step 15
         case rclcpp_action::ResultCode::ABORTED:
-            if (!patrol_config_.retry_on_failure) {
-                RCLCPP_ERROR(this->get_logger(), "Navigation failed! Retry disabled, stopping patrol.");
-                is_patrolling_ = false;
-                break;
-            }
-            if (++retry_count_ <= patrol_config_.max_retries) {
-                RCLCPP_ERROR(this->get_logger(), "Navigation to %s failed! Retry %d/%d...",
-                    patrol_points_[current_point_index_].name.c_str(),
-                    retry_count_, patrol_config_.max_retries);
-            } else {
-                // An unreachable point must not stall the patrol: skip it.
-                RCLCPP_ERROR(this->get_logger(), "Max retries (%d) reached. Skipping waypoint %s.",
-                    patrol_config_.max_retries, patrol_points_[current_point_index_].name.c_str());
-                retry_count_ = 0;
-                if (!patrol_config_.loop_enabled && current_point_index_ + 1 >= patrol_points_.size()) {
-                    RCLCPP_INFO(this->get_logger(), "Patrol complete (loop disabled)");
-                    is_patrolling_ = false;
-                    break;
-                }
-                current_point_index_ = (current_point_index_ + 1) % patrol_points_.size();
-            }
-            std::this_thread::sleep_for(2s);
-            if (is_patrolling_) {
-                goToNextPoint();         // Step 16
-            }
+            onFailure();
             break;
             
         default:
             RCLCPP_ERROR(this->get_logger(), "Unknown result code");
             break;
+    }
+}
+
+void PatrolController::onFailure()
+{
+    // Aborted or rejected goal: retry the same point up to max_retries, then skip it.
+    if (!patrol_config_.retry_on_failure) {
+        RCLCPP_ERROR(this->get_logger(), "Navigation failed! Retry disabled, stopping patrol.");
+        is_patrolling_ = false;
+        return;
+    }
+    if (++retry_count_ <= patrol_config_.max_retries) {
+        RCLCPP_ERROR(this->get_logger(), "Navigation to %s failed! Retry %d/%d...",
+            patrol_points_[current_point_index_].name.c_str(),
+            retry_count_, patrol_config_.max_retries);
+    } else {
+        // An unreachable point must not stall the patrol: skip it.
+        RCLCPP_ERROR(this->get_logger(), "Max retries (%d) reached. Skipping waypoint %s.",
+            patrol_config_.max_retries, patrol_points_[current_point_index_].name.c_str());
+        retry_count_ = 0;
+        if (!patrol_config_.loop_enabled && current_point_index_ + 1 >= patrol_points_.size()) {
+            RCLCPP_INFO(this->get_logger(), "Patrol complete (loop disabled)");
+            is_patrolling_ = false;
+            return;
+        }
+        current_point_index_ = (current_point_index_ + 1) % patrol_points_.size();
+    }
+    std::this_thread::sleep_for(2s);
+    if (is_patrolling_) {
+        goToNextPoint();         // Step 16
     }
 }
 

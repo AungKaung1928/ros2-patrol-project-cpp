@@ -59,6 +59,7 @@ private:
     geometry_msgs::msg::PoseStamped createPoseStamped(double x, double y, double z = 0.0, double yaw = 0.0);
     void goToNextPoint();
     void checkNavigationResult();
+    void onFailure();
     void waitForNav2();
     void setInitialPose();
     
