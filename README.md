@@ -41,7 +41,7 @@ The route as configured in `config/patrol_points.yaml` (drawn by `scripts/plot_r
 - `src/waypoint_manager.cpp` loads the YAML; `src/patrol_visualizer.cpp` publishes the RViz markers.
 - Nav2 settings are in `config/nav2_params.yaml`.
 
-An aborted goal is retried on the same waypoint up to `max_retries` (3 in `config/patrol_points.yaml`), then the waypoint is skipped, as in the Python version; `retry_on_failure: false` stops the patrol instead. `loop_enabled: false` visits each point once and stops, as in the Python version. Limits: not measured: loop time, success rate, waypoint accuracy.
+An aborted goal is retried on the same waypoint up to `max_retries` (3 in `config/patrol_points.yaml`), then the waypoint is skipped, as in the Python version; `retry_on_failure: false` stops the patrol instead. `loop_enabled: false` visits each point once and stops, as in the Python version. Limits: a goal canceled from outside the node (another Nav2 client, RViz) ends the patrol without a resume; not measured: loop time, success rate, waypoint accuracy.
 
 Test without Gazebo or Nav2: `cd src/patrol_navigation_project_cpp && launch_test test/test_launch_retry.py` (after `source install/setup.bash`) runs the installed node against a stand-in `navigate_to_pose` server that aborts every goal for the first point, and checks it is tried 4 times and then skipped; `test_launch_no_loop.py` checks `loop_enabled: false` stops after the last point. The Python version runs the same two tests; CI runs them in `ros:humble` on every push.
 
