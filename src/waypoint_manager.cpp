@@ -37,6 +37,9 @@ void WaypointManager::loadPatrolPoints()
         }
         
         if (const auto pc = config["patrol_config"]) {
+            if (pc["loop_enabled"]) {
+                patrol_config_.loop_enabled = pc["loop_enabled"].as<bool>();
+            }
             if (pc["wait_at_waypoint"]) {
                 patrol_config_.wait_at_waypoint = pc["wait_at_waypoint"].as<double>();
             }

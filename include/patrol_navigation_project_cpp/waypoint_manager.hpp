@@ -20,6 +20,7 @@ struct PatrolPoint
 // patrol_config block of config/patrol_points.yaml; defaults match the shipped file.
 struct PatrolConfig
 {
+    bool loop_enabled = true;
     double wait_at_waypoint = 2.0;  // s
     bool retry_on_failure = true;
     int max_retries = 3;

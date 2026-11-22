@@ -223,6 +223,11 @@ void PatrolController::resultCallback(
                 
                 // Move to next point
                 // Step 13
+                if (!patrol_config_.loop_enabled && current_point_index_ + 1 >= patrol_points_.size()) {
+                    RCLCPP_INFO(this->get_logger(), "Patrol complete (loop disabled)");
+                    is_patrolling_ = false;
+                    break;
+                }
                 current_point_index_ = (current_point_index_ + 1) % patrol_points_.size();
                 
                 // Continue patrol if still active
@@ -253,6 +258,11 @@ void PatrolController::resultCallback(
                 RCLCPP_ERROR(this->get_logger(), "Max retries (%d) reached. Skipping waypoint %s.",
                     patrol_config_.max_retries, patrol_points_[current_point_index_].name.c_str());
                 retry_count_ = 0;
+                if (!patrol_config_.loop_enabled && current_point_index_ + 1 >= patrol_points_.size()) {
+                    RCLCPP_INFO(this->get_logger(), "Patrol complete (loop disabled)");
+                    is_patrolling_ = false;
+                    break;
+                }
                 current_point_index_ = (current_point_index_ + 1) % patrol_points_.size();
             }
             std::this_thread::sleep_for(2s);

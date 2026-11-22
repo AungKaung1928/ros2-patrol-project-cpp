@@ -61,6 +61,7 @@ patrol_points:
 
 # Patrol configuration
 patrol_config:
+  loop_enabled: true
   wait_at_waypoint: 2.0  # seconds
   retry_on_failure: true
   max_retries: 3
