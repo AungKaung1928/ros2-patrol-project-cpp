@@ -273,13 +273,7 @@ ros2 topic echo /patrol_waypoints --once
 
 ## Performance Metrics
 
-| Metric | Value |
-|--------|-------|
-| Full Loop Time | 4-6 minutes |
-| Total Distance | 15-18 meters |
-| Average Speed | 2.5-3.0 m/s |
-| Waypoint Accuracy | ±0.3m |
-| Success Rate | >95% |
+Not measured: loop time, distance, speed, waypoint accuracy and success rate (no script records them).
 
 ## Troubleshooting
 
