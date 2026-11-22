@@ -29,6 +29,7 @@ PatrolController::PatrolController()
     // Step 3
     waypoint_manager_ = std::make_shared<WaypointManager>();
     patrol_points_ = waypoint_manager_->getPatrolPoints();
+    patrol_config_ = waypoint_manager_->getPatrolConfig();
     
     // Initialize visualizer
     visualizer_ = std::make_shared<PatrolVisualizer>();
@@ -214,9 +215,11 @@ void PatrolController::resultCallback(
             {
                 const auto& current_point = patrol_points_[current_point_index_];
                 RCLCPP_INFO(this->get_logger(), "Reached %s!", current_point.name.c_str());
-                
-                // Wait a bit at the patrol point
-                std::this_thread::sleep_for(2s);
+                retry_count_ = 0;
+
+                // Wait at the patrol point (patrol_config.wait_at_waypoint)
+                std::this_thread::sleep_for(
+                    std::chrono::duration<double>(patrol_config_.wait_at_waypoint));
                 
                 // Move to next point
                 // Step 13
@@ -236,7 +239,22 @@ void PatrolController::resultCallback(
 
         // Step 15
         case rclcpp_action::ResultCode::ABORTED:
-            RCLCPP_ERROR(this->get_logger(), "Navigation failed! Retrying...");
+            if (!patrol_config_.retry_on_failure) {
+                RCLCPP_ERROR(this->get_logger(), "Navigation failed! Retry disabled, stopping patrol.");
+                is_patrolling_ = false;
+                break;
+            }
+            if (++retry_count_ <= patrol_config_.max_retries) {
+                RCLCPP_ERROR(this->get_logger(), "Navigation to %s failed! Retry %d/%d...",
+                    patrol_points_[current_point_index_].name.c_str(),
+                    retry_count_, patrol_config_.max_retries);
+            } else {
+                // An unreachable point must not stall the patrol: skip it.
+                RCLCPP_ERROR(this->get_logger(), "Max retries (%d) reached. Skipping waypoint %s.",
+                    patrol_config_.max_retries, patrol_points_[current_point_index_].name.c_str());
+                retry_count_ = 0;
+                current_point_index_ = (current_point_index_ + 1) % patrol_points_.size();
+            }
             std::this_thread::sleep_for(2s);
             if (is_patrolling_) {
                 goToNextPoint();         // Step 16

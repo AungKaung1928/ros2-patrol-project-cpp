@@ -36,6 +36,18 @@ void WaypointManager::loadPatrolPoints()
             }
         }
         
+        if (const auto pc = config["patrol_config"]) {
+            if (pc["wait_at_waypoint"]) {
+                patrol_config_.wait_at_waypoint = pc["wait_at_waypoint"].as<double>();
+            }
+            if (pc["retry_on_failure"]) {
+                patrol_config_.retry_on_failure = pc["retry_on_failure"].as<bool>();
+            }
+            if (pc["max_retries"]) {
+                patrol_config_.max_retries = pc["max_retries"].as<int>();
+            }
+        }
+
         RCLCPP_INFO(this->get_logger(), 
             "Loaded %zu patrol points", patrol_points_.size());
         
@@ -56,6 +68,11 @@ void WaypointManager::loadPatrolPoints()
 std::vector<PatrolPoint> WaypointManager::getPatrolPoints() const
 {
     return patrol_points_;
+}
+
+PatrolConfig WaypointManager::getPatrolConfig() const
+{
+    return patrol_config_;
 }
 
 std::pair<size_t, PatrolPoint> WaypointManager::getNextPoint(size_t current_index) const

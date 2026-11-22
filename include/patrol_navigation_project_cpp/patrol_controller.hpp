@@ -38,6 +38,8 @@ private:
     // Waypoint manager
     std::shared_ptr<WaypointManager> waypoint_manager_;
     std::vector<PatrolPoint> patrol_points_;
+    PatrolConfig patrol_config_;
+    int retry_count_ = 0;
     
     // Visualizer
     std::shared_ptr<PatrolVisualizer> visualizer_;
