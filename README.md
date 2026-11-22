@@ -31,6 +31,10 @@ export TURTLEBOT3_MODEL=burger
 ros2 launch patrol_navigation_project_cpp patrol_navigation.launch.py
 ```
 
+![Configured patrol route: 8 points in the map frame, visited in order and looped](docs/route.svg)
+
+The route as configured in `config/patrol_points.yaml` (drawn by `scripts/plot_route.py`; CI fails if the figure and the config disagree). Not a recorded run.
+
 ## How it works
 
 - `src/patrol_controller.cpp` sends each waypoint as a Nav2 `NavigateToPose` goal; on success it moves to the next index (modulo 8, so it loops).
