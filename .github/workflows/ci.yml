@@ -1,0 +1,30 @@
+name: build
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    container: ros:humble
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: src/patrol_navigation_project_cpp
+      - name: Install dependencies (README quick start)
+        run: |
+          apt-get update
+          rosdep update
+          rosdep install --from-paths src --ignore-src -y
+      - name: Build
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --packages-select patrol_navigation_project_cpp --event-handlers console_direct+
+      - name: Executable and launch file installed
+        run: |
+          source install/setup.bash
+          ros2 pkg executables patrol_navigation_project_cpp | grep -q patrol_controller
+          test -f install/patrol_navigation_project_cpp/share/patrol_navigation_project_cpp/launch/patrol_navigation.launch.py
