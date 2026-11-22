@@ -61,12 +61,9 @@ patrol_points:
 
 # Patrol configuration
 patrol_config:
-  total_waypoints: 8
-  loop_enabled: true
   wait_at_waypoint: 2.0  # seconds
   retry_on_failure: true
   max_retries: 3
-  timeout_per_waypoint: 60.0  # seconds
 
 # Map metadata (for reference)
 map_info:
