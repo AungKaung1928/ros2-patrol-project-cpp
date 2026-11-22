@@ -37,7 +37,9 @@ ros2 launch patrol_navigation_project_cpp patrol_navigation.launch.py
 - `src/waypoint_manager.cpp` loads the YAML; `src/patrol_visualizer.cpp` publishes the RViz markers.
 - Nav2 settings are in `config/nav2_params.yaml`.
 
-Limits: an aborted goal is retried on the same waypoint with no retry cap, so an unreachable waypoint stalls the patrol (the Python version skips it after 3 tries). Not measured: loop time, success rate, waypoint accuracy.
+An aborted goal is retried on the same waypoint up to `max_retries` (3 in `config/patrol_points.yaml`), then the waypoint is skipped, as in the Python version; `retry_on_failure: false` stops the patrol instead. Limits: not measured: loop time, success rate, waypoint accuracy.
+
+Test without Gazebo or Nav2: `cd src/patrol_navigation_project_cpp && launch_test test/test_launch_retry.py` (after `source install/setup.bash`) runs the installed node against a stand-in `navigate_to_pose` server that aborts every goal for the first point, and checks it is tried 4 times and then skipped. CI runs it in `ros:humble` on every push.
 
 More: architecture, coverage map, layout, configuration, monitoring and troubleshooting in [docs/USAGE.md](docs/USAGE.md).
 
