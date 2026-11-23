@@ -1,8 +1,8 @@
 #include "patrol_navigation_project_cpp/waypoint_manager.hpp"
-#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <iostream>
+#include <ament_index_cpp/get_package_share_directory.hpp>
 
 namespace patrol_navigation_project_cpp
 {

@@ -1,10 +1,10 @@
 #ifndef PATROL_NAVIGATION_PROJECT_CPP__WAYPOINT_MANAGER_HPP_
 #define PATROL_NAVIGATION_PROJECT_CPP__WAYPOINT_MANAGER_HPP_
 
-#include <rclcpp/rclcpp.hpp>
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
+#include <rclcpp/rclcpp.hpp>
 
 namespace patrol_navigation_project_cpp
 {
