@@ -4,7 +4,7 @@ A TurtleBot3 patrols 8 waypoints in the Gazebo TurtleBot3 world with Nav2, in a 
 
 > **Simulator note (2026-09-05):** this project targets **Gazebo Classic 11** (`turtlebot3_gazebo`), which reached end-of-life in January 2025, and it is kept as-is rather than ported. For the same TurtleBot3 setup on **Gazebo Harmonic** (`ros_gz`), see [turtlebot3-wall-follower](https://github.com/AungKaung1928/turtlebot3-wall-follower).
 
-## Quick start
+## Build and run (Gazebo Classic 11)
 
 Requires Ubuntu 22.04, ROS 2 Humble with Nav2 and the TurtleBot3 packages, and Gazebo Classic 11 (`sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup 'ros-humble-turtlebot3*'`).
 
@@ -35,15 +35,15 @@ ros2 launch patrol_navigation_project_cpp patrol_navigation.launch.py
 
 The route as configured in `config/patrol_points.yaml` (drawn by `scripts/plot_route.py`; CI fails if the figure and the config disagree). Not a recorded run.
 
-## How it works
+## The port, file by file
 
-- `src/patrol_controller.cpp` sends each waypoint as a Nav2 `NavigateToPose` goal; on success it moves to the next index (modulo 8, so it loops).
+- `src/patrol_controller.cpp` sends each waypoint as a Nav2 `NavigateToPose` goal; on success it moves to the next index (modulo the number of points, 8 configured, so it loops).
 - `src/waypoint_manager.cpp` loads the YAML; `src/patrol_visualizer.cpp` publishes the RViz markers.
 - Nav2 settings are in `config/nav2_params.yaml`.
 
 An aborted goal is retried on the same waypoint up to `max_retries` (3 in `config/patrol_points.yaml`), then the waypoint is skipped, as in the Python version; `retry_on_failure: false` stops the patrol instead. `loop_enabled: false` visits each point once and stops, as in the Python version. Limits: a goal canceled from outside the node (another Nav2 client, RViz) ends the patrol without a resume; not measured: loop time, success rate, waypoint accuracy.
 
-Test without Gazebo or Nav2: `cd src/patrol_navigation_project_cpp && launch_test test/test_launch_retry.py` (after `source install/setup.bash`) runs the installed node against a stand-in `navigate_to_pose` server that aborts every goal for the first point, and checks it is tried 4 times and then skipped; `test_launch_no_loop.py` checks `loop_enabled: false` stops after the last point. The Python version runs the same two tests; CI runs them in `ros:humble` on every push.
+Test without Gazebo or Nav2: `cd src/patrol_navigation_project_cpp && launch_test test/test_launch_retry.py` (after `source install/setup.bash`) runs the installed node against a stand-in `navigate_to_pose` server that aborts every goal for the first point, and checks it is tried 4 times and then skipped; `test_launch_no_loop.py` checks `loop_enabled: false` stops after the last point; `test_launch_rejected.py` checks a rejected goal is retried like an aborted one. The Python version runs the same three tests; CI runs them in `ros:humble` on every push.
 
 More: architecture, coverage map, layout, configuration, monitoring and troubleshooting in [docs/USAGE.md](docs/USAGE.md).
 
