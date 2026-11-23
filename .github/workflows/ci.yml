@@ -41,3 +41,9 @@ jobs:
           cd src/patrol_navigation_project_cpp
           python3 scripts/plot_route.py
           git diff --exit-code docs/route.svg
+      - name: ament_lint_auto (report only until the findings are fixed)
+        continue-on-error: true
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon test --packages-select patrol_navigation_project_cpp --event-handlers console_direct+
+          colcon test-result --verbose
