@@ -17,13 +17,13 @@ void WaypointManager::loadPatrolPoints()
 {
     try {
         // Get package share directory
-        std::string package_share_directory = 
+        std::string package_share_directory =
             ament_index_cpp::get_package_share_directory("patrol_navigation_project_cpp");
         std::string yaml_file = package_share_directory + "/config/patrol_points.yaml";
-        
+
         // Load YAML file
         YAML::Node config = YAML::LoadFile(yaml_file);
-        
+
         if (config["patrol_points"]) {
             for (const auto& point : config["patrol_points"]) {
                 PatrolPoint patrol_point;
@@ -31,11 +31,11 @@ void WaypointManager::loadPatrolPoints()
                 patrol_point.x = point["x"].as<double>();
                 patrol_point.y = point["y"].as<double>();
                 patrol_point.z = point["z"].as<double>();
-                
+
                 patrol_points_.push_back(patrol_point);
             }
         }
-        
+
         if (const auto pc = config["patrol_config"]) {
             if (pc["loop_enabled"]) {
                 patrol_config_.loop_enabled = pc["loop_enabled"].as<bool>();
@@ -51,13 +51,13 @@ void WaypointManager::loadPatrolPoints()
             }
         }
 
-        RCLCPP_INFO(this->get_logger(), 
+        RCLCPP_INFO(this->get_logger(),
             "Loaded %zu patrol points", patrol_points_.size());
-        
+
     } catch (const std::exception& e) {
-        RCLCPP_ERROR(this->get_logger(), 
+        RCLCPP_ERROR(this->get_logger(),
             "Failed to load patrol points: %s", e.what());
-        
+
         // Default points if file loading fails
         patrol_points_ = {
             {"point_1", 2.0, 0.0, 0.0},

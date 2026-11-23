@@ -31,31 +31,31 @@ public:
 private:
     // Navigation action client
     rclcpp_action::Client<NavigateToPose>::SharedPtr navigate_to_pose_client_;
-    
+
     // Initial pose publisher
     rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_pub_;
-    
+
     // Waypoint manager
     std::shared_ptr<WaypointManager> waypoint_manager_;
     std::vector<PatrolPoint> patrol_points_;
     PatrolConfig patrol_config_;
     int retry_count_ = 0;
-    
+
     // Visualizer
     std::shared_ptr<PatrolVisualizer> visualizer_;
-    
+
     // Patrol state
     size_t current_point_index_;
     bool is_patrolling_;
-    
+
     // Timer for checking navigation status
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::TimerBase::SharedPtr reject_timer_;
-    
+
     // Current goal handle
     std::shared_future<GoalHandleNavigateToPose::SharedPtr> goal_handle_future_;
     GoalHandleNavigateToPose::SharedPtr goal_handle_;
-    
+
     // Methods
     geometry_msgs::msg::PoseStamped createPoseStamped(double x, double y, double z = 0.0, double yaw = 0.0);
     void goToNextPoint();
@@ -63,7 +63,7 @@ private:
     void onFailure();
     void waitForNav2();
     void setInitialPose();
-    
+
     // Action callbacks
     void goalResponseCallback(const GoalHandleNavigateToPose::SharedPtr & goal_handle);
     void feedbackCallback(

@@ -23,11 +23,11 @@ public:
 private:
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr current_target_pub_;
-    
+
     visualization_msgs::msg::Marker createWaypointMarker(
-        const PatrolPoint& point, 
+        const PatrolPoint& point,
         size_t index);
-    
+
     visualization_msgs::msg::Marker createPathMarker(
         const std::vector<PatrolPoint>& waypoints);
 };
